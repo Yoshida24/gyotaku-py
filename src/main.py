@@ -1,13 +1,11 @@
-from modules.cowsay_demo.greeting import greet_to, greet_from_env
+from modules.reservation import snapshot
+
+import asyncio
 
 
-def main():
-    # use argument to greet
-    greet_to(your_name="Alan")
-
-    # use environment variable to greet
-    greet_from_env()
+async def main():
+    await snapshot.post()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
