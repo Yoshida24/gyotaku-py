@@ -24,8 +24,13 @@ locale = "ja-JP"
 start_datetime_str = now_str()
 
 
-def save_reservation_capture(page: Page, additional_path: str | None = None) -> None:
-    file_name = start_datetime_str + ".png"
+def save_reservation_capture(
+    page: Page,
+    additional_path: str | None = None,
+    file_prefix: str = "",
+    file_suffix: str = "",
+) -> None:
+    file_name = file_prefix + start_datetime_str + file_suffix + ".png"
     path = (
         Path(snapshots_path + "/" + additional_path)
         if additional_path is not None
@@ -36,9 +41,12 @@ def save_reservation_capture(page: Page, additional_path: str | None = None) -> 
 
 
 def save_reservation_html_snapshot(
-    page: Page, additional_path: str | None = None
+    page: Page,
+    additional_path: str | None = None,
+    file_prefix: str = "",
+    file_suffix: str = "",
 ) -> None:
-    file_name = start_datetime_str + ".html"
+    file_name = file_prefix + start_datetime_str + file_suffix + ".html"
     path = (
         Path(snapshots_path + "/" + additional_path)
         if additional_path is not None
@@ -95,6 +103,17 @@ def save_capture(context, additional_path: str):
     save_reservation_capture(context_page, additional_path)
 
 
+@behave.then(
+    'I save a capture with suffix to "{additional_path}", file suffix is "{file_suffix}"'
+)
+def save_capture_with_fixture(context, additional_path: str, file_suffix: str):
+    if context_page is None:
+        raise Exception("No page has been opened")
+    if context_browser is None:
+        raise Exception("No browser has been opened")
+    save_reservation_capture(context_page, additional_path, file_suffix=file_suffix)
+
+
 @behave.then('I save a HTML snapshot to "{additional_path}"')
 def save_snapshot(context, additional_path: str):
     if context_page is None:
@@ -102,6 +121,19 @@ def save_snapshot(context, additional_path: str):
     if context_browser is None:
         raise Exception("No browser has been opened")
     save_reservation_html_snapshot(context_page, additional_path)
+
+
+@behave.then(
+    'I save a HTML snapshot with suffix to "{additional_path}", file suffix is "{file_suffix}"'
+)
+def save_snapshot_with_fixture(context, additional_path: str, file_suffix: str):
+    if context_page is None:
+        raise Exception("No page has been opened")
+    if context_browser is None:
+        raise Exception("No browser has been opened")
+    save_reservation_html_snapshot(
+        context_page, additional_path, file_suffix=file_suffix
+    )
 
 
 @behave.then("end")
