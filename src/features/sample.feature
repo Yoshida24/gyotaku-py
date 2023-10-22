@@ -5,6 +5,6 @@ Feature: Take Gyotaku of cucumber.io TOP Page
     Then I wait for 3 seconds
     Then I click the ".btn[href="/docs/installation/"]"
     Then I wait for 3 seconds
-    Then I save a capture to "sample/captures"
-    Then I save a HTML snapshot to "sample/html"
+    Then I save a capture to "welcome/captures"
+    Then I save a HTML snapshot to "welcome/html"
     Then end

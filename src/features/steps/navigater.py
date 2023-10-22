@@ -1,4 +1,4 @@
-from behave import __all__
+import behave
 
 from playwright.sync_api import sync_playwright, Browser, Page
 
@@ -56,7 +56,7 @@ context_browser: Browser | None = None
 context_page: Page | None = None
 
 
-@given('I open "{url}"')
+@behave.given('I open "{url}"')
 def step_open_url(context, url):
     global context_browser, context_page, user_agent, locale
     context_browser = global_p.chromium.launch(headless=True)
@@ -64,7 +64,7 @@ def step_open_url(context, url):
     context_page.goto(url)
 
 
-@then('I click the "{selector}"')
+@behave.then('I click the "{selector}"')
 def step_click_button(context, selector: str):
     if context_page is None:
         raise Exception("No page has been opened")
@@ -72,21 +72,21 @@ def step_click_button(context, selector: str):
     button.click()
 
 
-@then('I goto "{url}"')
+@behave.then('I goto "{url}"')
 def step_goto_url(context, url: str):
     if context_page is None:
         raise Exception("No page has been opened")
     context_page.goto(url)
 
 
-@then("I wait for {seconds:d} seconds")
+@behave.then("I wait for {seconds:d} seconds")
 def step_wait(context, seconds: int):
     if context_page is None:
         raise Exception("No page has been opened")
     context_page.wait_for_timeout(seconds * 1000)
 
 
-@then('I save a capture to "{additional_path}"')
+@behave.then('I save a capture to "{additional_path}"')
 def save_capture(context, additional_path: str):
     if context_page is None:
         raise Exception("No page has been opened")
@@ -95,7 +95,7 @@ def save_capture(context, additional_path: str):
     save_reservation_capture(context_page, additional_path)
 
 
-@then('I save a HTML snapshot to "{additional_path}"')
+@behave.then('I save a HTML snapshot to "{additional_path}"')
 def save_snapshot(context, additional_path: str):
     if context_page is None:
         raise Exception("No page has been opened")
@@ -104,7 +104,7 @@ def save_snapshot(context, additional_path: str):
     save_reservation_html_snapshot(context_page, additional_path)
 
 
-@then("end")
+@behave.then("end")
 def end(context):
     if context_browser is None:
         raise Exception("No browser has been opened")
