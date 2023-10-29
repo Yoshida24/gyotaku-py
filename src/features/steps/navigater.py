@@ -1,61 +1,15 @@
 import behave
 
 from playwright.sync_api import sync_playwright, Browser, Page
-
-from pathlib import Path
-import os
-from datetime import datetime
+from src.modules.scraper import save_capture, save_html_snapshot
 
 
-# Utility
-def now_str() -> str:
-    return datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+from src.modules.util import now_str
+from src.modules.constants import user_agent, locale
 
-
-# Constants
-_snapshots_parent_path = os.environ.get("SNAPSHOTS_PARENT_PATH", None)
-if _snapshots_parent_path is None:
-    raise Exception("SNAPSHOTS_PATH is not set")
-snapshots_path = _snapshots_parent_path + "/snapshots"
-user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
-locale = "ja-JP"
 
 # Set start datetime
 start_datetime_str = now_str()
-
-
-def save_reservation_capture(
-    page: Page,
-    additional_path: str | None = None,
-    file_prefix: str = "",
-    file_suffix: str = "",
-) -> None:
-    file_name = file_prefix + start_datetime_str + file_suffix + ".png"
-    path = (
-        Path(snapshots_path + "/" + additional_path)
-        if additional_path is not None
-        else Path(snapshots_path)
-    )
-    path.mkdir(parents=True, exist_ok=True)
-    page.screenshot(path=path / file_name, full_page=True)
-
-
-def save_reservation_html_snapshot(
-    page: Page,
-    additional_path: str | None = None,
-    file_prefix: str = "",
-    file_suffix: str = "",
-) -> None:
-    file_name = file_prefix + start_datetime_str + file_suffix + ".html"
-    path = (
-        Path(snapshots_path + "/" + additional_path)
-        if additional_path is not None
-        else Path(snapshots_path)
-    )
-    path.mkdir(parents=True, exist_ok=True)
-    content = page.content()
-    with open(path / file_name, "w") as f:
-        f.write(content)
 
 
 # Setup Playwright
@@ -95,49 +49,59 @@ def step_wait(context, seconds: int):
 
 
 @behave.then('I save a capture to "{additional_path}"')
-def save_capture(context, additional_path: str):
+def step_save_capture(context, additional_path: str):
     if context_page is None:
         raise Exception("No page has been opened")
     if context_browser is None:
         raise Exception("No browser has been opened")
-    save_reservation_capture(context_page, additional_path)
+    save_capture(context_page, additional_path, start_datetime_str=start_datetime_str)
 
 
 @behave.then(
     'I save a capture with suffix to "{additional_path}", file suffix is "{file_suffix}"'
 )
-def save_capture_with_fixture(context, additional_path: str, file_suffix: str):
+def step_save_capture_with_fixture(context, additional_path: str, file_suffix: str):
     if context_page is None:
         raise Exception("No page has been opened")
     if context_browser is None:
         raise Exception("No browser has been opened")
-    save_reservation_capture(context_page, additional_path, file_suffix=file_suffix)
+    save_capture(
+        context_page,
+        additional_path,
+        file_suffix=file_suffix,
+        start_datetime_str=start_datetime_str,
+    )
 
 
 @behave.then('I save a HTML snapshot to "{additional_path}"')
-def save_snapshot(context, additional_path: str):
+def step_save_snapshot(context, additional_path: str):
     if context_page is None:
         raise Exception("No page has been opened")
     if context_browser is None:
         raise Exception("No browser has been opened")
-    save_reservation_html_snapshot(context_page, additional_path)
+    save_html_snapshot(
+        context_page, additional_path, start_datetime_str=start_datetime_str
+    )
 
 
 @behave.then(
     'I save a HTML snapshot with suffix to "{additional_path}", file suffix is "{file_suffix}"'
 )
-def save_snapshot_with_fixture(context, additional_path: str, file_suffix: str):
+def step_save_snapshot_with_fixture(context, additional_path: str, file_suffix: str):
     if context_page is None:
         raise Exception("No page has been opened")
     if context_browser is None:
         raise Exception("No browser has been opened")
-    save_reservation_html_snapshot(
-        context_page, additional_path, file_suffix=file_suffix
+    save_html_snapshot(
+        context_page,
+        additional_path,
+        file_suffix=file_suffix,
+        start_datetime_str=start_datetime_str,
     )
 
 
 @behave.then("end")
-def end(context):
+def step_end(context):
     if context_browser is None:
         raise Exception("No browser has been opened")
     context_browser.close()
