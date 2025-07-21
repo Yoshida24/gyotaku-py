@@ -8,6 +8,7 @@ Lets take "Gyotaku" !
 
 - A tool to save full-size captures of web pages, and HTML snapshots.
 - You can write browser macros in Gherkin format that closely resemble natural language.
+- Execution logs are saved with detailed timestamp tracking.
 
 ## Getting Started
 
@@ -41,15 +42,55 @@ make run
 ```
 
 Success is indicated when [cucumber](https://cucumber.io/) official page captures and HTML snapshots are created under the file specified in `SNAPSHOTS_PARENT_PATH`.
-- Sample screenshot: [snapshots/sample/captures](snapshots/sample/captures/2023_10_22_13_21_00.png)
-- Sample HTML snapshot: [snapshots/sample/html](snapshots/sample/html/2023_10_22_13_21_00.html)
+
+## Output Structure
+
+The tool creates the following directory structure with execution history tracking:
+
+```
+Project Root/
+├── logs/
+│   └── log.txt                   # Detailed step logs (timestamp:::message format)
+└── SNAPSHOTS_PARENT_PATH/
+    └── artifacts/
+        └── [feature_name]/       # e.g., "sample" from sample.feature
+            └── executions/
+                └── YYYY_MM_DD_HH_MM_SS/  # Execution timestamp
+                    ├── captures/         # Screenshot files (.png)
+                    ├── html/            # HTML snapshot files (.html)
+                    └── behave_execution.log  # Behave execution summary
+```
+
+### Example Directory Structure
+```
+gyotaku-py/                       # Project root
+├── logs/
+│   └── log.txt                   # All execution logs (consolidated)
+└── artifacts/
+    └── sample/
+        └── executions/
+            ├── 2025_07_22_08_11_28/
+            │   ├── captures/
+            │   │   └── 2025_07_22_08_11_28.png
+            │   ├── html/
+            │   │   └── 2025_07_22_08_11_28.html
+            │   └── behave_execution.log
+            └── 2025_07_22_08_25_18/
+                ├── captures/
+                │   └── 2025_07_22_08_25_18.png
+                ├── html/
+                │   └── 2025_07_22_08_25_18.html
+                └── behave_execution.log
+```
 
 ## Use Cases
 
 ### Taking Gyotaku
-Get Captures like below:
-- Sample screenshot: [snapshots/sample/captures](snapshots/sample/captures/2023_10_22_13_21_00.png)
-- Sample HTML snapshot: [snapshots/sample/html](snapshots/sample/html/2023_10_22_13_21_00.html)
+Each execution creates a timestamped directory containing:
+- Screenshots in `captures/` directory
+- HTML snapshots in `html/` directory
+- Behave execution summary in `behave_execution.log`
+- Detailed step logs are consolidated in project root `logs/log.txt`
 
 Create a browser macro in `src/features/my_gyotaku.feature` in Gherkin format.
 

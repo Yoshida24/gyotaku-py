@@ -159,7 +159,11 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-snapshots/*
-!snapshots/sample*
+# Project specific
+artifacts/*
+!artifacts/.gitkeep
+!artifacts/sample*
+logs/*
+!logs/.gitkeep
 *.feature
 !sample.feature
