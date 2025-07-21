@@ -82,7 +82,7 @@ Set up `crontab -e`.
 ## Usage
 
 depends on:
-- Python: 3.11.2
+- Python: python 3.13.5
 - pip: 22.3.1
 - GNU Make: 3.81
 
