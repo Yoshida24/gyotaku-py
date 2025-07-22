@@ -5,15 +5,25 @@ set -a && . ./.env && set +a
 # Create logs directory in project root
 mkdir -p logs
 
-# Extract feature file name without extension
-FEATURE_FILE="src/features/sample.feature"
-FEATURE_NAME=$(basename "$FEATURE_FILE" .feature)
+# Get feature name from argument (default: "default")
+FEATURE_NAME=${1:-"default"}
+FEATURE_FILE="settings/features/${FEATURE_NAME}.feature"
+
+# Check if feature file exists
+if [ ! -f "$FEATURE_FILE" ]; then
+    echo "Error: Feature file '$FEATURE_FILE' not found!"
+    echo "Available features:"
+    ls -1 settings/features/*.feature 2>/dev/null | xargs -I {} basename {} .feature || echo "No feature files found"
+    exit 1
+fi
+
+echo "Using feature file: $FEATURE_FILE"
 
 # Generate timestamp for execution directory
-EXECUTION_TIMESTAMP=$(date '+%Y_%m_%d_%H_%M_%S')
+EXECUTION_TIMESTAMP=$(date '+%Y%m%d%H%M%S')
 
 # Create execution directory structure
-EXECUTION_DIR="$SNAPSHOTS_PARENT_PATH/artifacts/$FEATURE_NAME/executions/$EXECUTION_TIMESTAMP"
+EXECUTION_DIR="$SNAPSHOTS_PARENT_PATH/executions/$FEATURE_NAME/$EXECUTION_TIMESTAMP"
 mkdir -p "$EXECUTION_DIR/captures"
 mkdir -p "$EXECUTION_DIR/html"
 

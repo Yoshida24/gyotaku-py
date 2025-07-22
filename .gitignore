@@ -160,10 +160,11 @@ cython_debug/
 #.idea/
 
 # Project specific
-artifacts/*
-!artifacts/.gitkeep
-!artifacts/sample*
+executions/*
+!executions/.gitkeep
+!executions/sample*
 logs/*
 !logs/.gitkeep
 *.feature
 !sample.feature
+!default.feature

@@ -6,7 +6,7 @@ from pathlib import Path
 
 # Utility
 def now_str() -> str:
-    return datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+    return datetime.now().strftime("%Y%m%d%H%M%S%f")[:17]
 
 
 def log_message(message: str) -> None:
